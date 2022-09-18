@@ -1,13 +1,21 @@
 package reflection;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
 class Junit4TestRunner {
 
     @Test
     void run() throws Exception {
-        Class<Junit4Test> clazz = Junit4Test.class;
-
-        // TODO Junit4Test에서 @MyTest 애노테이션이 있는 메소드 실행
+        final Class<Junit4Test> clazz = Junit4Test.class;
+        final Object object = clazz.getDeclaredConstructor().newInstance();
+        for (final Method method : clazz.getDeclaredMethods()) {
+            for (final Annotation annotation : method.getAnnotations()) {
+                if (annotation.annotationType().equals(MyTest.class)) {
+                    method.invoke(object);
+                }
+            }
+        }
     }
 }
